@@ -1,0 +1,49 @@
+#!/usr/bin/python3
+
+import random
+
+d = {1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h',9:'i',10:'j',11:'k',12:'l',13:'m',14:'n',15:'o',16:'p',17:'q',18:'r',19:'s',20:'t',21:'u',22:'v',23:'w',24:'x',25:'y',26:'z'}
+
+def primo(n):
+  if n == 2 or n == 3: return True
+  if n < 2 or n%2 == 0: return False
+  if n < 9: return True
+  if n%3 == 0: return False
+  r = int(n**0.5)
+  f = 5
+  while f <= r:
+    if n%f == 0: return False
+    if n%(f+2) == 0: return False
+    f +=6
+  return True
+
+def selec():
+	while 1:
+		x = random.randint(2,100)
+		if primo(x) == True:
+			return x
+			break
+		else:
+			continue
+
+
+#print(list(d.keys())[list(d.values()).index('h')]) 
+valor = input('numero a cifrar: ')
+p = selec()
+print('valor de p: ',p)
+q = selec()
+print('valor de q: ',q)
+#p = 53
+#q = 59
+n = int(p*q)
+print('valor de n: ',n)
+phy = int((p-1) * (q-1))
+print('valor de phy: ',phy)
+#e = random.randrange(1,phy)
+e = 3
+d = int((2*phy+1)/e)
+
+c = int(int(valor)**e%n)
+print('numero ' +valor+ ' cifrado: ',c)
+desc = int(c**d%n)
+print('numero ' +valor+ ' descifrado: ',desc)
