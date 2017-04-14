@@ -27,14 +27,11 @@ def selec():
 			continue
 
 
-#print(list(d.keys())[list(d.values()).index('h')]) 
 valor = input('numero a cifrar: ')
 p = selec()
 print('valor de p: ',p)
 q = selec()
 print('valor de q: ',q)
-#p = 53
-#q = 59
 n = int(p*q)
 print('valor de n: ',n)
 phy = int((p-1) * (q-1))
