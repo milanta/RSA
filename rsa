@@ -4,12 +4,47 @@ import random
 
 d = {1:'a',2:'b',3:'c',4:'d',5:'e',6:'f',7:'g',8:'h',9:'i',10:'j',11:'k',12:'l',13:'m',14:'n',15:'o',16:'p',17:'q',18:'r',19:'s',20:'t',21:'u',22:'v',23:'w',24:'x',25:'y',26:'z'}
 
-def primo(n):
+
+# Función de Euler
+def lcm(x, y):
+
+    # choose the greater number
+    if x > y:
+       greater = x
+    else:
+       greater = y
+    l = 0
+    while(True):
+        if(greater % x == 0) and (greater % y == 0):
+            l = greater
+            break
+        greater += 1
+
+    return l
+
+
+def egcd(a, b):
+    if a == 0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b % a, a)
+        return g, x - (b // a) * y, y
+
+
+def modinv(a, m):
+    g, x, y = egcd(a, m)
+    if g != 1:
+        raise Exception('El inverso del modulo no existe')
+    else:
+        return x % m
+
+
+def esprimo(n):
   if n == 2 or n == 3: return True
   if n < 2 or n%2 == 0: return False
   if n < 9: return True
   if n%3 == 0: return False
-  r = int(n**0.5)
+  r = n**0.5
   f = 5
   while f <= r:
     if n%f == 0: return False
@@ -17,30 +52,73 @@ def primo(n):
     f +=6
   return True
 
-def selec():
-	while 1:
-		x = random.randint(2,100)
-		if primo(x) == True:
-			return x
-			break
-		else:
-			continue
+def sieveOfEratosthenes(n):
+    """sieveOfEratosthenes(n): return the list of the primes < n."""
+    # Code from: <dickinsm@gmail.com>, Nov 30 2006
+    # http://groups.google.com/group/comp.lang.python/msg/f1f10ced88c68c2d
+    if n <= 2:
+        return []
+    sieve = list(range(3, n, 2))
+    top = len(sieve)
+    for si in sieve:
+        if si:
+            bottom = (si*si - 3) // 2
+            if bottom >= top:
+                break
+            sieve[bottom::si] = [0] * -((bottom - top) // si)
+    return [2] + [el for el in sieve if el]
 
 
-valor = input('numero a cifrar: ')
-p = selec()
-print('valor de p: ',p)
-q = selec()
-print('valor de q: ',q)
-n = int(p*q)
-print('valor de n: ',n)
-phy = int((p-1) * (q-1))
+def selec2prime(fin=100):
+    if fin < 47:
+        primoshasta = 100
+    else:
+        primoshasta = fin
+    primos = sieveOfEratosthenes(primoshasta)
+    print(primos)
+    while 1:
+        x, y = random.sample(primos, 2)
+        if x*y > fin:
+            return x, y
+        else:
+            continue
+
+
+def seleccoprime(inicio=1, fin=100):
+    while 1:
+        x = random.randint(inicio,fin)
+        if esprimo(x):
+            if x % fin == 0:
+                continue
+            else:
+                return x
+        else:
+            continue
+
+valor = int(input('numero a cifrar: '))
+p , q = selec2prime(valor)
+# p = 61
+# q = 53
+print('valor de p: ', p)
+print('valor de q: ', q)
+
+n = p*q
+print('valor de n: ', n)
+
+phy = lcm((p-1), (q-1))
 print('valor de phy: ',phy)
-#e = random.randrange(1,phy)
-e = 3
-d = int((2*phy+1)/e)
 
-c = int(int(valor)**e%n)
-print('numero ' +valor+ ' cifrado: ',c)
-desc = int(c**d%n)
-print('numero ' +valor+ ' descifrado: ',desc)
+# tiene que ser coprimo y no divisible
+e = seleccoprime(1, phy)
+# e = 17
+print('valor de e: ',e)
+
+# modular multiplicative inverse of e (mod λ(n))
+d = modinv(e, phy)
+print('valor de d: ',d)
+
+c = valor**e%n
+print('numero ' + str(valor) + ' cifrado: ',c)
+
+desc = c**d%n
+print('numero ' + str(valor)+ ' descifrado: ',desc)
