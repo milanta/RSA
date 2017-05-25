@@ -52,11 +52,34 @@ def esprimo(n):
     f +=6
   return True
 
-def selecprime(inicio=1, fin=100):
+def sieveOfEratosthenes(n):
+    """sieveOfEratosthenes(n): return the list of the primes < n."""
+    # Code from: <dickinsm@gmail.com>, Nov 30 2006
+    # http://groups.google.com/group/comp.lang.python/msg/f1f10ced88c68c2d
+    if n <= 2:
+        return []
+    sieve = list(range(3, n, 2))
+    top = len(sieve)
+    for si in sieve:
+        if si:
+            bottom = (si*si - 3) // 2
+            if bottom >= top:
+                break
+            sieve[bottom::si] = [0] * -((bottom - top) // si)
+    return [2] + [el for el in sieve if el]
+
+
+def selec2prime(fin=100):
+    if fin < 47:
+        primoshasta = 100
+    else:
+        primoshasta = fin
+    primos = sieveOfEratosthenes(primoshasta)
+    print(primos)
     while 1:
-        x = random.randint(inicio,fin)
-        if esprimo(x):
-            return x
+        x, y = random.sample(primos, 2)
+        if x*y > fin:
+            return x, y
         else:
             continue
 
@@ -73,20 +96,21 @@ def seleccoprime(inicio=1, fin=100):
             continue
 
 valor = int(input('numero a cifrar: '))
-p = selecprime(2,100)
+p , q = selec2prime(valor)
 # p = 61
 # q = 53
 print('valor de p: ', p)
-q = selecprime(2,100)
 print('valor de q: ', q)
+
 n = p*q
 print('valor de n: ', n)
+
 phy = lcm((p-1), (q-1))
 print('valor de phy: ',phy)
 
 # tiene que ser coprimo y no divisible
 e = seleccoprime(1, phy)
-#e = 17
+# e = 17
 print('valor de e: ',e)
 
 # modular multiplicative inverse of e (mod λ(n))
@@ -94,7 +118,6 @@ d = modinv(e, phy)
 print('valor de d: ',d)
 
 c = valor**e%n
-
 print('numero ' + str(valor) + ' cifrado: ',c)
 
 desc = c**d%n
